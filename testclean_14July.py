@@ -1,4 +1,4 @@
-﻿from opentrons import protocol_api
+from opentrons import protocol_api
 import json
 from decimal import Decimal
 
@@ -31,8 +31,11 @@ water_vol_elute = 8
 #ethanol volume (ul)
 eth_vol = 80
 
-#incubation time
+#incubation on beads time
 incubate_time = 5
+
+
+##### PROTOCOL
 
 def run(protocol_context):
     #load plates
@@ -171,13 +174,11 @@ def run(protocol_context):
 
     p300.flow_rate.aspirate = 110
     p300.flow_rate.dispense = 110
-
-    protocol_context.pause(msg='Add RT Plate')
-
+    
     for i in range(1, (col_range + 1)):
         _tipCol = "A" + str(i)
         p20.pick_up_tip(_water_tips.wells_by_name()[_tipCol])
         p20.transfer(water_vol_elute, mag_plate.wells_by_name()[_tipCol], 
-            final_plate.wells_by_name()[_tipCol], new_tip='never', mix_after=(3, 7))
+            final_plate.wells_by_name()[_tipCol], new_tip='never')
         p20.drop_tip()
 
