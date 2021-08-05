@@ -1,0 +1,93 @@
+﻿import json
+from decimal import Decimal
+from opentrons import protocol_api
+
+metadata = {
+    'protocolName': 'PCR distribution for qiaseq sarscov2',
+    'author': 'Mark Whitehead <hlmwhite@liverpool.ac.uk>',
+    'apiLevel': '2.5'
+    }
+
+### user setup
+
+# plate 1 primer mix 1 - A2 (half)
+# plate 1 primer mix 1 - A3
+
+# plate 1 primer mix 2 - A5
+# plate 1 primer mix 2 - A6
+
+#plate 1 setup
+plate1 = 'yes'
+plate1_col_range = 12
+
+
+###########
+
+
+
+def run(protocol_context):
+    #load labware 
+    #For testing
+    '''
+    with open('4titude_96_Well_Plate_200µL.json') as labware_file:
+        labware_def = json.load(labware_file)
+        if plate1 == "yes":
+            pl1_PA = protocol_context.load_labware_from_definition(labware_def, 4, label='RT_pl1')
+            pl1_PB = protocol_context.load_labware_from_definition(labware_def, 1, label='pl1_primer2')
+        if plate2 == "yes":
+            pl2_PA = protocol_context.load_labware_from_definition(labware_def, 6, label='RT_pl2')
+            pl2_PB = protocol_context.load_labware_from_definition(labware_def, 3, label='pl2_primer2')
+        reag_pl = protocol_context.load_labware_from_definition(labware_def, 2, label='reag_plate')
+    '''
+    if plate1 == "yes":
+        _PA = protocol_context.load_labware('4titude_96_wellplate_200ul', 4, label='pl1_primer1')
+        _PB = protocol_context.load_labware('4titude_96_wellplate_200ul', 1, label='pl1_primer2')
+        _RT = protocol_context.load_labware('4titude_96_wellplate_200ul', 5, label='RT')
+    reag_pl = protocol_context.load_labware('4titude_96_wellplate_200ul', 2, label='reag_plate')
+
+    #load tips
+    _1_tips = protocol_context.load_labware('opentrons_96_tiprack_20ul', 7)
+    _2_tips = protocol_context.load_labware('opentrons_96_tiprack_20ul', 8)
+    _3_tips = protocol_context.load_labware('opentrons_96_tiprack_20ul', 10)
+
+    #load pipette
+    p20 = protocol_context.load_instrument('p20_multi_gen2', 'left', tip_racks=[_1_tips, _2_tips, _3_tips])
+
+    # add in primer2
+    if plate1_col_range > 6:
+        p20.pick_up_tip()
+        for i in range(1, (plate1_col_range + 1)):
+            _col="A" + str(i)
+            if i <= 6:
+                p20.transfer(11, reag_pl.wells_by_name()['A5'], _PB.wells_by_name()[_col], new_tip='never')
+            elif i >= 7:
+                p20.transfer(11, reag_pl.wells_by_name()['A6'], _PB.wells_by_name()[_col], new_tip='never')
+        p20.drop_tip()
+
+    # add in primer1
+    if plate1_col_range > 6:
+        p20.pick_up_tip()
+        for i in range(1, (plate1_col_range + 1)):
+            _col="A" + str(i)
+            if i <= 6:
+                p20.transfer(11, reag_pl.wells_by_name()['A2'], _PA.wells_by_name()[_col], new_tip='never')
+            elif i >= 7:
+                p20.transfer(11, reag_pl.wells_by_name()['A3'], _PA.wells_by_name()[_col], new_tip='never')
+        p20.drop_tip()
+
+    # add in RT to plate 2
+    for i in range(1, (plate1_col_range + 1)):
+        p20.pick_up_tip()
+        _col="A" + str(i)
+        p20.transfer(2, _RT.wells_by_name()[_col], _PB.wells_by_name()[_col], new_tip='never', mix_after=(1, 11))
+        p20.drop_tip()
+
+    # add in RT to plate 1
+    for i in range(1, (plate1_col_range + 1)):
+        p20.pick_up_tip()
+        _col="A" + str(i)
+        p20.transfer(2, _RT.wells_by_name()[_col], _PA.wells_by_name()[_col], new_tip='never', mix_after=(1, 11))
+        p20.drop_tip()
+
+
+
