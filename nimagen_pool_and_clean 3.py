@@ -30,8 +30,6 @@ plate_col_range_4=12
 ########## PROTOCOL
 
 
-#list_A=["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1"]
-#list_B=["A2", "B2", "C2", "D2", "E2", "F2", "G2", "H2"]
 
 list=["A", "B", "C", "D", "E", "F", "G", "H"]
 
@@ -103,96 +101,6 @@ if plate4 == "yes":
         _pool_plate_vol_4 = (plate_col_range_4 * _strip_vol_4)
         _prop_vol_4 = (_pool_plate_vol_4/6)
         _pool_tube_vol_4 = (_pool_plate_vol_4 - _prop_vol_4)
-'''
-def _pooling(_colNum, stripVol, _magPlateCol):
-    for i in range(1, (_colNum + 1)):
-        _poolCol = "A" + str(_magPlateCol)
-        _col="A" + str(i)
-        p20.pick_up_tip(tips20_1.wells_by_name()[_col])
-        p20.transfer(stripVol, plate1.wells_by_name()[_col],
-            mag_plate.wells_by_name()[_poolCol], new_tip='never')
-        #p20.drop_tip()
-        p20.return_tip()
-
-    for i in range(1, (_colNum + 1)):
-        _poolCol = "A" + str(_magPlateCol + 1)
-        _col="A" + str(i)
-        p20.pick_up_tip(tips20_2.wells_by_name()[_col])
-        p20.transfer(stripVol, plate2.wells_by_name()[_col],
-            mag_plate.wells_by_name()[_poolCol], new_tip='never')
-        #p20.drop_tip()
-        p20.return_tip()
-
-def _pool_to_tube(_poolVol, _colToPool, _destEppendorfWell_A, _destEppendorfWell_B):
-    p300.pick_up_tip()
-    #mix_vol = _pool_tube_vol
-    mix_vol = _poolVol
-    list_A = []
-    for _row in list:
-        _well = str(_row) + str(_colToPool)
-        list_A.append(_well)
-    for pos in list_A:
-        if mix_vol == _poolVol:
-            p300.transfer(_poolVol, mag_plate.wells_by_name()[pos],
-                tube_rack.wells_by_name()[_destEppendorfWell_A], new_tip='never')
-        elif mix_vol > _poolVol:
-            _tube_mix_vol = (mix_vol - 10)
-            if _tube_mix_vol > 200:
-                _tube_mix_vol = 200
-            p300.transfer(_poolVol, mag_plate.wells_by_name()[pos],
-                tube_rack.wells_by_name()[_destEppendorfWell_A], new_tip='never', mix_after=(2, _tube_mix_vol))
-        mix_vol = (mix_vol + _poolVol)
-    p300.drop_tip()
-
-    p300.pick_up_tip()
-    #mix_vol = _pool_tube_vol
-    mix_vol = _poolVol
-    _2colToPool = _colToPool + 1
-    list_A = []
-    for _row in list:
-        _well = str(_row) + str(_2colToPool)
-        list_A.append(_well)
-    for pos in list_A:
-        if mix_vol == _poolVol:
-            p300.transfer(_poolVol, mag_plate.wells_by_name()[pos],
-                tube_rack.wells_by_name()[_destEppendorfWell_B], new_tip='never')
-        elif mix_vol > _poolVol:
-            _tube_mix_vol = (mix_vol - 10)
-            if _tube_mix_vol > 200:
-                _tube_mix_vol = 200
-            p300.transfer(_poolVol, mag_plate.wells_by_name()[pos],
-                tube_rack.wells_by_name()[_destEppendorfWell_B], new_tip='never', mix_after=(2, _tube_mix_vol))
-        mix_vol = (mix_vol + _poolVol)
-    p300.drop_tip()
-
-def _dilute_pool(_poolA_PlatePos, _poolB_PlatePos):
-    p300.transfer(37.5, tube_rack.wells_by_name()['D6'], mag_plate.wells_by_name()[_poolA_PlatePos], new_tip='never')
-    p300.transfer(37.5, tube_rack.wells_by_name()['D6'], mag_plate.wells_by_name()[_poolB_PlatePos], new_tip='never')
-
-_wells_to_clean1 = []
-def _add_pool(_poolA_TubePos, _poolB_TubePos, _poolA_PlatePos, _poolB_PlatePos):
-    p300.pick_up_tip()
-    p300.transfer(37.5, tube_rack.wells_by_name()[_poolA_TubePos], mag_plate.wells_by_name()[_poolA_PlatePos], new_tip='never')
-    p300.drop_tip()
-    p300.pick_up_tip()
-    p300.transfer(37.5, tube_rack.wells_by_name()[_poolB_TubePos], mag_plate.wells_by_name()[_poolB_PlatePos], new_tip='never')
-    p300.drop_tip()
-    _wells_to_clean1.append(_poolA_PlatePos)
-    _wells_to_clean1.append(_poolB_PlatePos)
-
-_wells_to_clean2 = []
-def _elute_clean1(_srcCol, _destCol):
-    p300.pick_up_tip()
-    p300.transfer(70, mag_plate.wells_by_name()[_srcCol], mag_plate.wells_by_name()[_destCol], new_tip='never')
-    p300.drop_tip()
-    _wells_to_clean2.append(_destCol)
-
-
-def _get_elute2(_srcWell, _destTube):
-    p300.pick_up_tip()
-    p300.transfer(20, mag_plate.wells_by_name()[_srcWell], tube_rack.wells_by_name()[_destTube], new_tip='never')
-    p300.drop_tip()
-'''
 
 
 
@@ -350,23 +258,6 @@ def run(protocol_context):
 
     #protocol_context.set_rail_lights(False)
 
-    '''
-    # pool A
-    for i in range(1, (plate_col_range + 1)):
-        p20.pick_up_tip()
-        _col="A" + str(i)
-        p20.transfer(_strip_vol, plate1.wells_by_name()[_col],
-            mag_plate.wells_by_name()['A1'], new_tip='never')
-        p20.drop_tip()
-
-    # pool B
-    for i in range(1, (plate_col_range + 1)):
-        p20.pick_up_tip()
-        _col="A" + str(i)
-        p20.transfer(_strip_vol, plate2.wells_by_name()[_col],
-            mag_plate.wells_by_name()['A2'], new_tip='never')
-        p20.drop_tip()
-    '''
     # pool samples in to tubes
 
 
@@ -380,23 +271,6 @@ def run(protocol_context):
         _pool_to_tube(_pool_tube_vol_2, 7, "A4", "B4")
 
 
-
-    '''
-    p300.pick_up_tip()
-    mix_vol = _pool_tube_vol
-    for pos in list_B:
-        if mix_vol == _pool_tube_vol:
-            p300.transfer(_pool_tube_vol, mag_plate.wells_by_name()[pos],
-                tube_rack.wells_by_name()['B3'], new_tip='never')
-        elif mix_vol > _pool_tube_vol:
-            _tube_mix_vol = (mix_vol - 10)
-            if _tube_mix_vol > 200:
-                _tube_mix_vol = 200
-            p300.transfer(_pool_tube_vol, mag_plate.wells_by_name()[pos],
-                tube_rack.wells_by_name()['B3'], new_tip='never', mix_after=(2, _tube_mix_vol))
-        mix_vol = (mix_vol + _pool_tube_vol)
-    p300.drop_tip()
-    '''
     p300.pick_up_tip()
     if plate1=="yes":
         _dilute_pool("A10", "B10")
@@ -408,13 +282,7 @@ def run(protocol_context):
         _dilute_pool("G10", "H10")
     p300.drop_tip()
 
-    '''
-    # take 37.5 uL into plate along with 37.5 of TE buffer, then 59.5 uL (0.85x)
-    p300.pick_up_tip()
-    p300.transfer(37.5, tube_rack.wells_by_name()['B6'], mag_plate.wells_by_name()['A5'], new_tip='never')
-    p300.transfer(37.5, tube_rack.wells_by_name()['B6'], mag_plate.wells_by_name()['D5'], new_tip='never')
-    p300.drop_tip()
-    '''
+
 
     if plate1=="yes":
         _add_pool("A1", "B1", "A10", "B10")
@@ -425,14 +293,7 @@ def run(protocol_context):
     if plate4=="yes":
         _add_pool("A4", "B4", "G10", "H10")
 
-    '''
-    p300.pick_up_tip()
-    p300.transfer(37.5, tube_rack.wells_by_name()['B2'], mag_plate.wells_by_name()['A5'], new_tip='never')
-    p300.drop_tip()
-    p300.pick_up_tip()
-    p300.transfer(37.5, tube_rack.wells_by_name()['B3'], mag_plate.wells_by_name()['D5'], new_tip='never')
-    p300.drop_tip()
-    '''
+
     '''
     p300.pick_up_tip()
         p300.mix(10, 200, tube_rack.wells_by_name()['A6'])
