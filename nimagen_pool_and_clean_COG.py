@@ -3,7 +3,7 @@ import json
 from decimal import Decimal
 
 metadata = {
-    'protocolName': 'nimagen plate pooling and library clean up v2',
+    'protocolName': 'nimagen plate pooling and library clean up for COG samples',
     'author': 'Mark Whitehead <hlmwhite@liverpool.ac.uk>',
     'apiLevel': '2.10'
     }
