@@ -1,4 +1,4 @@
-﻿import json
+import json
 from decimal import Decimal
 from opentrons import protocol_api
 
